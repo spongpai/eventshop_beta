@@ -7,6 +7,7 @@ import static com.eventshop.eventshoplinux.constant.Constant.PATH_DS;
 import static com.eventshop.eventshoplinux.constant.Constant.json;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
@@ -124,11 +125,13 @@ public class DataSourceService {
 		String vizFilePath = Config.getProperty(CONTEXT) + PATH_DS + dsId + json;
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader(vizFilePath));
-			EmageElement eme = new Gson().fromJson(br, EmageElement.class);
-			if(eme.row * eme.col > 150000)	// reduce emage size that return to the browser
-				eme.reduceSize(1);
-			return eme;
+			File vizFile = new File(vizFilePath);
+			if(vizFile.exists()){
+				br = new BufferedReader(new FileReader(vizFilePath));
+				EmageElement eme = new Gson().fromJson(br, EmageElement.class);
+				if(eme.row * eme.col > 150000)	// reduce emage size that return to the browser			eme.reduceSize(1);
+				return eme;
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -82,9 +82,9 @@ public class VisualEmageIterator extends EmageIterator {
 		if(ignoreColorSamplesBeyond == 0)
 			ignoreColorSamplesBeyond = colorMatrix.length;
 
-		if(maskImgFName == null && this.theme.equalsIgnoreCase("pollen"))
+		if(maskImgFName == null && this.theme.contains("pollen"))
 				maskImgFName = Constant.pollenMASK;
-		if(maskImgFName == null && this.theme.equalsIgnoreCase("aqi"))
+		if(maskImgFName == null && this.theme.contains("aqi"))
 				maskImgFName = Constant.aqiMASK;
 		
 		if(this.theme.equalsIgnoreCase("aqi")){
