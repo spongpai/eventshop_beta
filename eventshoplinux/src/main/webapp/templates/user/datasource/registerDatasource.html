@@ -20,7 +20,7 @@
 			<td><% if(Data[i].control == 0) {%> 
 				<!--  <input type="checkbox" name="cboxDS[]" value="<%=Data[i].srcID%>" id="regds" > -->
 				<button class="start_ds btn btn-primary btn-small" id="<%=Data[i].srcID%>">R</button>
-			 <% }else{ %> 
+			 <% }else if(Data[i].control == 1){ %> 
 			 <!--  <a class="btn btn-small btn-inverse h16" href="#"><img
 					id="<%=Data[i].srcID%>" class="img_class_stop" name="<%=Data[i].srcID%>"
 					src="imgs/stop_32.png" />
@@ -29,9 +29,11 @@
 			<button class="stop_ds btn btn-success btn-small" id="<%=Data[i].srcID%>">P</button>
 			<button class="view_ds btn btn-warning btn-small" id="<%=Data[i].srcID%>">V</button>
 			 <!-- <img id="<%=Data[i].srcID%>" class="view_ds btn btn-small" src="imgs/view.png" /> -->
-			<% } %>
+			<% } else {%>
 				
-			
+			<button class="stop_ds btn btn-success btn-small" id="<%=Data[i].srcID%>" disabled>P</button>
+			<button class="view_ds btn btn-warning btn-small" id="<%=Data[i].srcID%>">V</button>
+			<% } %>
 			</td>
 		</tr>
 

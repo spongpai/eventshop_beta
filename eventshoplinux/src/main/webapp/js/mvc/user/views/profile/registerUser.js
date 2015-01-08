@@ -35,11 +35,12 @@ define([
 	
 	if($('#userMailId').val()=="")
 	{
-		alert("Please enter your email id");
+		alert("Please enter your email");
 		return false;
 	}
-	if(!(/^[a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z]+\.([c][o][m]{1})$/.test($('#userMailId').val()))){
-		alert("Please enter your valid email id");
+	//if(!(/^[a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z]+\.([c][o][m]{1})$/.test($('#userMailId').val()))){
+	if(!(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.(?:[a-z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$/.test($('#userMailId').val()))){
+		alert("Please enter your valid email");
 		return false;
 	}	
 		

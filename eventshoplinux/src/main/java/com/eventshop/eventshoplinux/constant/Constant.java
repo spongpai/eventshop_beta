@@ -97,8 +97,8 @@ public class Constant {
 	public static final String LATITUDE_UNIT = "latitude_unit";
 	public static final String LONGITUDE_UNIT = "longitude_unit";
 	public static final String BOUNDINGBOX = "boundingbox";
-	public static final String SELECT_DSMSR_QRY = "SELECT dm.dsmaster_id, dm.dsmaster_title,dm.dsmaster_creator,dm.dsmaster_url FROM Datasource_Master dm";
-	public static final String SLT_DSMSR_QRY_BASEON_ID_QRY =  " WHERE dsmaster_creator=?";
+	public static final String SELECT_DSMSR_QRY = "SELECT dm.dsmaster_id, dm.dsmaster_title,dm.dsmaster_creator,dm.dsmaster_url, dm.dsmaster_access FROM Datasource_Master dm";
+	public static final String SLT_DSMSR_QRY_BASEON_ID_QRY =  " WHERE dsmaster_creator=? or dsmaster_access = \"public\"";
 	public static final String SELECT_QRMSTR_QRY = "SELECT query_id,query_name,query_status FROM Query_Master WHERE qid_parent IS NULL";
 	// OR query_creator_id='' removed this, nt sure why it was put --sanjukta
 	public static final String SLT_QRMSTR_BASEON_ID_QRY = " AND query_creator_id=? ";

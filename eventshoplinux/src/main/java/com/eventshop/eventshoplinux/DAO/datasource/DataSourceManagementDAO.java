@@ -503,6 +503,8 @@ public class DataSourceManagementDAO extends BaseDAO {
 					source.setStatus(STATUS_NOT_AVAILABLE);
 				    source.setControl(0);
 				}
+				if(rs.getString("dsmaster_access") != null && rs.getString("dsmaster_access").equalsIgnoreCase("public"))
+					source.setControl(-1);
 				source.setSrcID(srcId);	
 		    	source.setSrcName(srcTitle);	
 		    	

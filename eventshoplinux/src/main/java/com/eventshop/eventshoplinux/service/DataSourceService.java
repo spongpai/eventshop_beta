@@ -129,7 +129,8 @@ public class DataSourceService {
 			if(vizFile.exists()){
 				br = new BufferedReader(new FileReader(vizFilePath));
 				EmageElement eme = new Gson().fromJson(br, EmageElement.class);
-				if(eme.row * eme.col > 150000)	// reduce emage size that return to the browser			eme.reduceSize(1);
+				if(eme.row * eme.col > 150000)	// reduce emage size that return to the browser			
+					eme.reduceSize(1);
 				return eme;
 			}
 		} catch (FileNotFoundException e) {

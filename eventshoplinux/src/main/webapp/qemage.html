@@ -277,8 +277,6 @@ $(document).ready(function () {
 		//var color = d3.scale.linear().domain([emage.min, emage.max])
 		//				.interpolate(d3.interpolateRgb)
 		//				.range(["#fff", "#000"]);
-	
-		
 		var emageData = convertArray2LalLongData(emage);
 		var emMin = emage.min, emMax = emage.max;
 		
@@ -302,7 +300,7 @@ $(document).ready(function () {
 				.attr("width", w)
 				.attr("height", h)
 				.attr("fill", function(d) { return colGroup[d.value]})
-				.attr("fill-opacity", 0.75)
+				.attr("fill-opacity", 0.35)
 				//.attr("stroke", "#fff")
 				.attr("cell", function(d) { return "r" + d.x + "c" + d.y})
 	    	.append("svg:title")

@@ -154,8 +154,7 @@ public class KMLIterator extends EmageIterator
 		try {
 			readPointsFromKMLFile();
 		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			log.error(e2.getMessage());
+			log.error("error in read points form kml file: " + e2.getMessage());
 		}
 		int nRows=params.getNumOfRows();
 		int nCols=params.getNumOfColumns();
@@ -281,53 +280,49 @@ public class KMLIterator extends EmageIterator
 		DocumentBuilder docBuilder=null;
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
 
 		//tsuji:note [b] change this
 		
+		log.info("fileURL: " + fileURL);
 		URL url = new URL(fileURL);
 		InputStream stream = url.openStream();
 		Document doc=null;
 		try {
 			doc = docBuilder.parse(stream);
-		} catch (SAXException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			log.error(e.getMessage());
+			log.error("parse stream url" + e.getMessage());
 		}
-
+		
 		// normalize text representation
 		doc.getDocumentElement ().normalize ();
 		log.info("Root element of the doc is " + doc.getDocumentElement().getNodeName());
-		NodeList listOfPlacemarks = doc.getElementsByTagName("coordinates");
+		NodeList listOfPlacemarks = doc.getElementsByTagName("Placemark");
+		//NodeList listOfPlacemarks = doc.getElementsByTagName("coordinates");
 		int totalPlacemarks = listOfPlacemarks.getLength();
 		log.info("Total no of Placemarks : " + totalPlacemarks);
 		for(int s=0; s<listOfPlacemarks.getLength() ; s++)
 		{
+			log.info("number of placemark " + listOfPlacemarks.getLength());
+			
 			Node placemarkNode = listOfPlacemarks.item(s);
-			if(placemarkNode.getNodeType() == Node.ELEMENT_NODE)
-			{
-				if (placemarkNode.hasChildNodes())
-				{
+			if(placemarkNode.getNodeType() == Node.ELEMENT_NODE){
+				if (placemarkNode.hasChildNodes()){
 					NodeList detailsOfPlacemark=placemarkNode.getChildNodes();
-					for (int j=0; j<detailsOfPlacemark.getLength(); j++)
-					{
+					for (int j=0; j<detailsOfPlacemark.getLength(); j++){
 						String coordText=detailsOfPlacemark.item(j).getTextContent();
 						StringTokenizer vals = new StringTokenizer(coordText, " \n"); 
 						int lenTokens=vals.countTokens();
-						if (lenTokens>1)
-						{	//its a polygon
+						if (lenTokens>1){	//its a polygon
 							isPolygon=true;
 						}
-						else
-						{
+						else{
 							isPolygon=false;
 						}
-						for (int ln=0; ln<lenTokens; ln++)
-						{
-							                				
+						for (int ln=0; ln<lenTokens; ln++){
 							StringTokenizer latLongs=new StringTokenizer(vals.nextToken(), " ,"); 
 							Double longV=Double.valueOf(latLongs.nextToken());
 							Double latV=Double.valueOf(latLongs.nextToken());
@@ -341,7 +336,10 @@ public class KMLIterator extends EmageIterator
 						}
 					}                      
 				}
-			}			//end of if clause
+			}	//end of if clause
+			else{
+				//Node value = 
+			}
 		}//end of for loop with s var
 	}
 
@@ -349,7 +347,7 @@ public class KMLIterator extends EmageIterator
 
 	public static void main(String[] args) {
 		try {
-			long timeWindow = 1000*60*60*24*7; // the last 7 days
+			long timeWindow = 3000;//1000*60*60*24*7; // the last 7 days
 			long sync = 1000; 
 			double latUnit = 0.1;
 			double longUnit = 0.1;
@@ -359,16 +357,20 @@ public class KMLIterator extends EmageIterator
 			double neLong = -45;
 			FrameParameters fp = new FrameParameters(timeWindow, sync, latUnit,longUnit, 
 					swLat,swLong , neLat, neLong);
-			String theme=Config.getProperty("hurricaneTheme");
-			KMLIterator kit=new KMLIterator(fp, theme, "");
-
+			//String theme = Config.getProperty("hurricaneTheme");
+			String theme = "hospitalization";
+			String url = "http://eventshop.ics.uci.edu:8004/sln/datasource/cali_counties.kml";
+			KMLIterator kit=new KMLIterator(fp, theme, url);
+			kit.run();
+			/*
 			try {
 				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
 				//tsuji:note [b] change this
 				
-				URL url = new URL(Config.getProperty("hurricaneURL"));
+				//URL url = new URL(Config.getProperty("hurricaneURL"));
+				URL url = new URL("http://eventshop.ics.uci.edu:8004/sln/datasource/cali_counties.kml");
 				InputStream stream = url.openStream();
 				Document doc = docBuilder.parse(stream);
 
@@ -427,7 +429,7 @@ public class KMLIterator extends EmageIterator
 			}catch (Throwable t) {
 				log.error(t.getMessage());
 			}     	
-
+*/
 
 
 		} catch(Exception e) {

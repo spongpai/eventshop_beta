@@ -34,12 +34,16 @@ public class DataSourceTest {
 	protected static Log log=LogFactory.getLog(STMerger.class);
 	
 	
-	public static void main(String[] args){
+	
+public static void main(String[] args){
 		log.info("test data source");
 		RegisterServlet myServlet = new RegisterServlet();
 		DataSourceManagementDAO datasourceDAO = new DataSourceManagementDAO();
-		String context = Config.getProperty("context");
+		//String context = Config.getProperty("context");
+		//int[] dsIDList = {350, 357, 361, 382, 383, 384, 385, 386};	// Pollen, AQI, Tweets(Asthma)
 		int[] dsIDList = {350, 357, 361};	// Pollen, AQI, Tweets(Asthma)
+		//int[] dsIDList = {382, 383, 386};	// Pollen, AQI, Tweets(Asthma)
+		
 		for(int i = 0; i < dsIDList.length; i++){
 			int dsID = dsIDList[i];
 			DataSource dataSource =  datasourceDAO.getDataSource(dsID);	

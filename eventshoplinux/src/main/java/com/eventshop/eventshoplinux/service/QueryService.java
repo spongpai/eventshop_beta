@@ -6,12 +6,15 @@ import static com.eventshop.eventshoplinux.constant.Constant.RUN;
 import static com.eventshop.eventshoplinux.constant.Constant.SUCCESS;
 import static com.eventshop.eventshoplinux.constant.Constant.json;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.List;
 
@@ -165,6 +168,40 @@ public class QueryService {
 		return null;	
 		
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/qemage/{id}/{level}/{state}")
+	public EmageElement getQueryEmageElementLevel(
+			@PathParam(value="id") final String qid,
+			@PathParam(value="level") final int level,
+			@PathParam(value="state") final String state){
+		//DataSourceManagementDAO dao=new DataSourceManagementDAO();
+		String vizFilePath = Config.getProperty(CONTEXT) + "/temp/queries/Q" + qid + json;
+		File viz =  new File(vizFilePath);
+		BufferedReader br;
+		try {
+			//while(!viz.exists()){
+			//	new Thread().sleep(1000);
+			//}{
+			if(viz.exists()){
+				br = new BufferedReader(new FileReader(vizFilePath));
+				EmageElement eme = new Gson().fromJson(br, EmageElement.class);
+				eme.selectState(state);
+				eme.reduceSize(level);
+				//System.out.println(eme.toString());
+				return eme;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} //catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
+		return null;	
+		
+	}
+	
+	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

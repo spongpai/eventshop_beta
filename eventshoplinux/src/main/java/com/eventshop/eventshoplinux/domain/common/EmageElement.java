@@ -1,6 +1,15 @@
 package com.eventshop.eventshoplinux.domain.common;
 
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
+
+import com.eventshop.eventshoplinux.util.commonUtil.CommonUtil;
 
 public class EmageElement {
 	
@@ -52,6 +61,151 @@ public class EmageElement {
 			}
 		}
 		this.image = temp;	
+	}
+	
+	public double[] getCaliBoundary(){
+		String fileName = "/home/ing/CA_index_grid.csv";
+		BufferedReader reader = null;
+		double[] caImage = null;
+		StringBuilder sb = new StringBuilder();
+		try {
+			reader = new BufferedReader(new FileReader(fileName));
+			if(reader != null){
+				String dataRow = reader.readLine();
+				while(dataRow != null){
+					//String[] coord = dataRow.split(",");
+					//caIndex = new int[coord.length];
+					//for(int i = 0; i < coord.length; i++){
+					//	caIndex[i] = Integer.parseInt(coord[i]);
+					//}
+					sb.append(dataRow);
+					dataRow = reader.readLine();
+				}
+			}
+			String[] value = sb.toString().split(", ");
+			caImage = new double[value.length];
+			for(int i = 0; i < value.length; i++){
+				caImage[i] = Double.parseDouble(value[i]);
+			}
+			
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return caImage;
+	}
+	
+	public void selectState(String state){
+		if(state.equalsIgnoreCase("ca")){
+			double[] caImage = this.getCaliBoundary();
+			if(caImage != null) {
+				System.out.println("image length: " + image.length + ", " + row + ", " + col);
+				
+				for(int i = 0; i < image.length; i++){
+					if(caImage[i] == 0.0)
+						image[i] = Double.NaN;
+				}
+				StringBuilder sb = new StringBuilder();
+				for(int i = 0; i < image.length; i++){
+					sb.append(image[i] + ",");
+				}
+				CommonUtil.writeToFile("/home/ing/CA_"+theme+"_nan.csv", sb.toString(), false);
+				
+			}
+			
+			
+			Double llLat = 32.0, llLon = -125.0, urLat = 43.0, urLon = -112.0;
+			Point llPoint = latLong2Pixel(llLat, llLon);
+			Point urPoint = latLong2Pixel(urLat, urLon);
+			System.out.println("llPoint, urPoint: " + llPoint.x + ", " + llPoint.y + ", " + urPoint.x + ", " + urPoint.y);
+			int newRow = llPoint.x - urPoint.x;
+			int newCol = urPoint.y - llPoint.y;
+			double newMin = max;
+			double newMax = min;
+			double[] selectedImage = new double[newRow * newCol];
+			int count = 0;
+			
+			  for(int i = 0; i < this.image.length; i++){
+			 
+				int imageX = i / this.col;
+				int imageY = i % this.col;
+				if( imageX > urPoint.x && imageX <= llPoint.x && imageY > llPoint.y && imageY <= urPoint.y){
+					selectedImage[count] = image[i];
+					//System.out.println( "i,imageX,Y: " + i + ", " + imageX + ", " + imageY + ", ["+count+"] value" + image[i]);
+					count++;
+					if(image[i] > newMax)
+						newMax = image[i];
+					if(image[i] < newMin)
+						newMin = image[i];
+				}
+			}
+		
+			this.row = newRow;
+			this.col = newCol;
+			this.min = newMin;
+			this.max = newMax;
+			this.image = selectedImage;
+			this.swLat = llLat;
+			this.swLong = llLon;
+			this.neLat = urLat;
+			this.neLong = urLon;
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < image.length; i++){
+				sb.append(image[i] + ",");
+			}
+			CommonUtil.writeToFile("/home/ing/CA_"+theme+".csv", sb.toString(), false);
+			
+			// get ca post code
+			String fileName = "/home/ing/CA_postcode.csv";
+			BufferedReader reader = null;
+			StringBuilder str = new StringBuilder();
+			try {
+				reader = new BufferedReader(new FileReader(fileName));
+				if(reader != null){
+					String dataRow = reader.readLine();
+					while(dataRow != null){
+						String[] coord = dataRow.split(",");
+						Point p = this.latLong2Pixel(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
+						int index = p.x*row + p.y;
+						str.append(this.image[index] + ",");
+						dataRow = reader.readLine();	// read next line;
+						System.out.println("xyindex: " + p.x + "," +p.y+","+index+","+image[index]);
+					}
+				}
+			} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			CommonUtil.writeToFile("/home/ing/CA_postcode_"+theme+".csv", str.toString(), false);
+			
+			
+		}
+	} 
+	public Point  latLong2Pixel(Double latV, Double longV)
+	{
+		int nRows= this.row;
+
+		MathContext context = new MathContext(5);
+		int x=(nRows-1)-(int)((BigDecimal.valueOf(latV)).subtract(BigDecimal.valueOf(this.swLat), context).divide(BigDecimal.valueOf(this.latUnit), context).doubleValue());
+		int y=(int)((BigDecimal.valueOf(longV)).subtract(BigDecimal.valueOf(this.swLong), context).divide(BigDecimal.valueOf(this.longUnit), context).doubleValue());
+		
+		return  new Point(x,y);
+
+
 	}
 	
 	public String toString(){
