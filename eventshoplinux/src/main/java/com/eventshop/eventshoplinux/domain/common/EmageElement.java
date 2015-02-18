@@ -62,7 +62,7 @@ public class EmageElement {
 		}
 		this.image = temp;	
 	}
-	
+	/*
 	public double[] getCaliBoundary(){
 		String fileName = "/home/ing/CA_index_grid.csv";
 		BufferedReader reader = null;
@@ -195,6 +195,7 @@ public class EmageElement {
 			
 		}
 	} 
+	*/
 	public Point  latLong2Pixel(Double latV, Double longV)
 	{
 		int nRows= this.row;

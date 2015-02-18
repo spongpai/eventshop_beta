@@ -187,7 +187,7 @@ public class QueryService {
 			if(viz.exists()){
 				br = new BufferedReader(new FileReader(vizFilePath));
 				EmageElement eme = new Gson().fromJson(br, EmageElement.class);
-				eme.selectState(state);
+				//eme.selectState(state);
 				eme.reduceSize(level);
 				//System.out.println(eme.toString());
 				return eme;

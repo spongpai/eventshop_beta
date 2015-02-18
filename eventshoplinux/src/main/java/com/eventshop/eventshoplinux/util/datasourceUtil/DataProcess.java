@@ -73,7 +73,7 @@ public class DataProcess implements Runnable
 
 
 	public boolean isRunning;
-	DB db = CommonUtil.connectMongoDB();
+	//DB db = CommonUtil.connectMongoDB();
 
 	public DataProcess(STMerger merger, EmageIterator eit, Wrapper wrapper, String filepath, String imgpath, String dsID)
 	{
